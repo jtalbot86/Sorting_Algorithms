@@ -23,7 +23,7 @@ using namespace std;
 void step1();
 int validInput();
 void generateData(int arraySize);
-void createFile(string fileName, int *arr, float t);
+void createFile(string fileName, int *arr);
 void displayFile(string fileName);
 int createArray(string fileName, int *arr);
 void step2();
@@ -38,9 +38,9 @@ void buildHeap(int *arr);
 void heapsort(int *arr, int n);
 void heapify(int *arr,int n, int i);
 void quicksort(int *arr, int p, int r);
-void sortAll();
+void sortAll(int* );
 int partition(int *arr, int p, int r);
-float processTime(clock_t t);
+void processTime(clock_t t);
 
 int num = 0;
 int optNum = 0;
@@ -94,7 +94,7 @@ void generateData(int arraySize)
 }
 
 // Creates a file for specified sort
-void createFile(string fileName, int *arr, float t)
+void createFile(string fileName, int *arr)
 {
 	ofstream OutFile;
 
@@ -105,9 +105,7 @@ void createFile(string fileName, int *arr, float t)
 		if(fileName == "Data.txt")				// For Data.txt, add the user-specified number as 1st entry
 			OutFile << num << "\n";
 		for (int i = 0; i < num; i++)			// Add each number of array to a new line
-			OutFile << arr[i] << "\n";
-		
-		OutFile << "\n\n" << t;
+				OutFile << arr[i] << "\n";
 		
 		OutFile.close();						// Close file
 	}
@@ -184,7 +182,7 @@ void step2()
 
 		if (opt == '1')										// If user enters 1
 		{
-			createFile("Data.txt", randArray, 0);				// Create Data.txt
+			createFile("Data.txt", randArray);				// Create Data.txt
 			step3("Data.txt");								// Continue to step3
 		}
 		else if (opt == '2')								// If user enters 2
@@ -221,7 +219,6 @@ void step4(string fileName)
 	char opt = 0;
 	int *sortArr = new int[num];							// Create new array of num integers
 	clock_t t;
-	float ptime;
 
 	cout << "\n\nSelect from the following options: \n";
 	cout << "\t1: Insertion Sort\n";
@@ -244,8 +241,8 @@ void step4(string fileName)
 			t = clock();								// Read clock
 			insertionSort(sortArr);
 			t = clock() - t;							// Measure time elapsed
-			ptime = processTime(t);								// Display seconds to complete algorithm
-			createFile("InsertionSort.txt", sortArr, ptime);
+			processTime(t);								// Display seconds to complete algorithm
+			createFile("InsertionSort.txt", sortArr);
 			step5("InsertionSort.txt");
 		}
 		else if (opt == '2')							// Proceed to Selection Sort
@@ -254,8 +251,8 @@ void step4(string fileName)
 			t = clock();								// Read clock
 			selectionSort(sortArr);
 			t = clock() - t;							// Measure time elapsed
-			ptime = processTime(t);								// Display seconds to complete algorithm
-			createFile("SelectionSort.txt", sortArr, ptime);
+			processTime(t);								// Display seconds to complete algorithm
+			createFile("SelectionSort.txt", sortArr);
 			step5("SelectionSort.txt");
 		}
 		else if (opt == '3')							// Proceed to Merge Sort
@@ -264,8 +261,8 @@ void step4(string fileName)
 			t = clock();								// Read clock
 			mergeSort(sortArr, 0, num-1);
 			t = clock() - t;							// Measure time elapsed
-			ptime = processTime(t);								// Display seconds to complete algorithm
-			createFile("MergeSort.txt", sortArr, ptime);
+			processTime(t);								// Display seconds to complete algorithm
+			createFile("MergeSort.txt", sortArr);
 			step5("MergeSort.txt");
 		}
 		else if (opt == '4')							// Proceed to Heapsort
@@ -274,8 +271,8 @@ void step4(string fileName)
 			t = clock();								// Read clock
 			heapsort(sortArr, num);
 			t = clock() - t;							// Measure time elapsed
-			ptime = processTime(t);								// Display seconds to complete algorithm
-			createFile("HeapSort.txt", sortArr, ptime);
+			processTime(t);								// Display seconds to complete algorithm
+			createFile("HeapSort.txt", sortArr);
 			step5("HeapSort.txt");
 		}
 		else if (opt == '5')							// Proceed to Quicksort
@@ -284,45 +281,14 @@ void step4(string fileName)
 			t = clock();								// Read clock
 			quicksort(sortArr, 0, num - 1);
 			t = clock() - t;							// Measure time elapsed
-			ptime = processTime(t);								// Display seconds to complete algorithm
-			createFile("Quicksort.txt", sortArr, ptime);
+			processTime(t);								// Display seconds to complete algorithm
+			createFile("Quicksort.txt", sortArr);
 			step5("Quicksort.txt");
 		}
 
 		else if (opt == '6')
 		{
-			cout << "Sorting all...\n\n";
-			t = clock();								// Read clock
-			insertionSort(sortArr);
-			t = clock() - t;							// Measure time elapsed
-			ptime = processTime(t);								// Display seconds to complete algorithm
-			createFile("InsertionSort.txt", sortArr, ptime);
-
-			t = clock();								// Read clock
-			selectionSort(sortArr);
-			t = clock() - t;							// Measure time elapsed
-			ptime = processTime(t);								// Display seconds to complete algorithm
-			createFile("SelectionSort.txt", sortArr, ptime);
-
-			t = clock();								// Read clock
-			mergeSort(sortArr, 0, num - 1);
-			t = clock() - t;							// Measure time elapsed
-			ptime = processTime(t);								// Display seconds to complete algorithm
-			createFile("MergeSort.txt", sortArr, ptime);
-
-			t = clock();								// Read clock
-			heapsort(sortArr, num);
-			t = clock() - t;							// Measure time elapsed
-			ptime = processTime(t);								// Display seconds to complete algorithm
-			createFile("HeapSort.txt", sortArr, ptime);
-
-			t = clock();								// Read clock
-			quicksort(sortArr, 0, num - 1);
-			t = clock() - t;							// Measure time elapsed
-			ptime = processTime(t);								// Display seconds to complete algorithm
-			createFile("Quicksort.txt", sortArr, ptime);
-			cout << "All sorts complete\n\n";
-			step1();
+			sortAll(sortArr);
 		}
 		else if (opt == '0')
 			step1();
@@ -600,9 +566,42 @@ void quicksort(int *arr, int p, int r)
 	}
 }
 
-void sortAll()
+void sortAll(int *sortArr)
 {
+	clock_t t;
 
+	cout << "Sorting all...\n\n";
+	t = clock();								// Read clock
+	insertionSort(sortArr);
+	t = clock() - t;							// Measure time elapsed
+	processTime(t);								// Display seconds to complete algorithm
+	createFile("InsertionSort.txt", sortArr);
+
+	t = clock();								// Read clock
+	selectionSort(sortArr);
+	t = clock() - t;							// Measure time elapsed
+	processTime(t);								// Display seconds to complete algorithm
+	createFile("SelectionSort.txt", sortArr);
+
+	t = clock();								// Read clock
+	mergeSort(sortArr, 0, num - 1);
+	t = clock() - t;							// Measure time elapsed
+	processTime(t);								// Display seconds to complete algorithm
+	createFile("MergeSort.txt", sortArr);
+
+	t = clock();								// Read clock
+	heapsort(sortArr, num);
+	t = clock() - t;							// Measure time elapsed
+	processTime(t);								// Display seconds to complete algorithm
+	createFile("HeapSort.txt", sortArr);
+
+	t = clock();								// Read clock
+	quicksort(sortArr, 0, num - 1);
+	t = clock() - t;							// Measure time elapsed
+	processTime(t);								// Display seconds to complete algorithm
+	createFile("Quicksort.txt", sortArr);
+	cout << "All sorts complete\n\n";
+	step1();
 }
 
 int partition(int *arr, int p, int r)
@@ -623,7 +622,7 @@ int partition(int *arr, int p, int r)
 	return i + 1;					// Return index location of where pivot ended up
 }
 
-float processTime(clock_t tm)
+void processTime(clock_t tm)
 {
 	float ft = static_cast <float>(tm) / CLOCKS_PER_SEC;		// Convert to float
 	cout << "\nTime: " << ft << " seconds\n";
